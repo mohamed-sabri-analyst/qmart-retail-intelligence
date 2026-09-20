@@ -88,11 +88,46 @@ Operational health monitoring covering returns, inventory, and workforce.
 
 ---
 
+## 🧬 Under the Hood — The Actual DAX
+
+📄 **Full measure library (159 measures, organized by category):** [QMart_key-measures.md](QMart_key-measures.md)
+
+A few signature ones below. These are the real, unedited measures exported directly from the project's Power BI data model — not illustrative pseudocode.
+
+**Same-store sales growth** (isolates only stores active in both the current and prior period, for a like-for-like comparison):
+```dax
+Same Store Sales Growth % =
+VAR StoresActiveBothPeriods =
+    FILTER(
+        VALUES( Dim_Store[StoreKey] ),
+        CALCULATE([Total Transactions]) > 0 &&
+        CALCULATE([Total Transactions], SAMEPERIODLASTYEAR(Dim_Date[Date])) > 0
+    )
+VAR CurrRev = CALCULATE([Total Revenue], StoresActiveBothPeriods)
+VAR PrevRev = CALCULATE([Total Revenue], StoresActiveBothPeriods, SAMEPERIODLASTYEAR(Dim_Date[Date]))
+RETURN DIVIDE(CurrRev - PrevRev, PrevRev)
+```
+
+**Active SKUs** (filters the product catalog down to what's actually sellable right now):
+```dax
+Total Active SKUs =
+CALCULATE(DISTINCTCOUNT(Dim_Product[ProductKey]), Dim_Product[Status] = "Active")
+```
+
+**Revenue attainment against a fixed KPI target:**
+```dax
+Revenue vs Target % =
+DIVIDE([Total Revenue], [KPI Revenue Target])
+```
+
+---
+
 ## 📁 Repository Structure
 
 ```
 qmart-retail-intelligence/
 ├── README.md
+├── QMart_key-measures.md
 ├── QMart_Retail_Intelligence.pbix
 └── screenshots/
     ├── 00_Home.png
@@ -102,3 +137,8 @@ qmart-retail-intelligence/
     ├── 04_Customer_Analytics.png
     └── 05_Operations.png
 ```
+
+## 👤 Author
+
+**Mohamed Sabri Al-Deip** — MIS Analyst | Data Analyst | Power BI Developer
+📧 m_sabry91@hotmail.com &nbsp;|&nbsp; 🔗 [LinkedIn](https://www.linkedin.com/in/mohamed-sabri-aldeip) &nbsp;|&nbsp; 🌐 [Portfolio](https://mohamed-sabri-analyst.github.io)
