@@ -293,7 +293,7 @@ RANKX(ALL(Dim_Product[ProductName]), [Total Profit], , DESC)
 **Break-even Units**
 
 ```dax
-VAR FixedCosts = 50000000  -- ضع تقديرك السنوي بالريال القطري
+VAR FixedCosts = 50000000    
 VAR ContributionMarginPerUnit = DIVIDE([Total Profit], [Total Quantity Sold])
 RETURN
 DIVIDE(FixedCosts, ContributionMarginPerUnit, 0)
